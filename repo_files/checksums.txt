@@ -1,3 +1,6 @@
+1053735f5ce38878ce9088efeb87c7a9f76290961ddf24b43f7f8cebd6a8996b  ./kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video/kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video.part1.rar
+a85841a2c185f520162cc6a92688d53706986779734224dac692d14292e4bcfa  ./kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video/kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video.part2.rar
+cf67a0192347d7520400e2474d4b0f9b8ad7433adf027b61df2371769856f971  ./links.txt
 29ceebb7c02e32ddb7cf5ebca7246766724ca3c0fef932ee0802d0a5cbdeccac  ./index-v1-a1.mp4/index-v1-a1.mp4.part2.rar
 272d68bc76b4408a2e961698ce8f00312c15d4aea4899f6c0a9e382e33677b21  ./index-v1-a1.mp4/index-v1-a1.mp4.part6.rar
 9fa3a0bee549538d158792cdad4face7cf148641eb46c9a36b0d23e66c6cb7c9  ./index-v1-a1.mp4/index-v1-a1.mp4.part7.rar
