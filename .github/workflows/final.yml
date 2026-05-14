@@ -1,4 +1,4 @@
-name: Pro Downloader Splitter Ultimate
+name: Pro Downloader Splitter Ultimate (Fast Cached)
 
 on:
   workflow_dispatch:
@@ -16,20 +16,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install Dependencies
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Cache pip
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip
+
+      - name: Install yt-dlp
         run: |
-          sudo apt update
-
-          sudo apt install -y \
-            rar \
-            wget \
-            curl \
-            aria2 \
-            ffmpeg \
-            python3-pip \
-            coreutils \
-            jq
-
           pip install -U yt-dlp
 
       - name: Prepare Workspace
@@ -71,8 +70,6 @@ jobs:
               --file-access-retries 20 \
               --retry-sleep 5 \
               --socket-timeout 60 \
-              --downloader aria2c \
-              --downloader-args "aria2c:-x 8 -s 8 -k 1M --retry-wait=5 --max-tries=20" \
               --referer "$url" \
               --add-header "User-Agent: Mozilla/5.0" \
               --geo-bypass \
@@ -89,7 +86,7 @@ jobs:
 
           done < ../temp/urls.txt
 
-          echo "Removing files smaller than 20MB (final check)..."
+          echo "Removing files smaller than 20MB..."
           find . -type f -size -20M -delete
 
       - name: Verify Downloads
@@ -112,7 +109,7 @@ jobs:
             echo "OK: $file"
           done
 
-      - name: Split Files Using RAR
+      - name: Split Files (ZIP instead of RAR)
         run: |
           cd downloads
 
@@ -125,12 +122,7 @@ jobs:
 
             mkdir -p "../repo_files/$cleanname"
 
-            rar a \
-              -v49m \
-              -m0 \
-              "../repo_files/$cleanname/$cleanname.rar" \
-              "$file"
-
+            zip -0 -s 49m "../repo_files/$cleanname/$cleanname.zip" "$file"
           done
 
       - name: Generate SHA256 Checksums
@@ -165,8 +157,7 @@ jobs:
           git config --global user.email "actions@github.com"
 
           git add repo_files
-
-          git diff --cached --quiet || git commit -m "Auto upload split files"
+          git diff --cached --quiet || git commit -m "Auto upload files"
 
       - name: Push To Repository
         run: |
