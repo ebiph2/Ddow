@@ -1,10 +1,3 @@
-1053735f5ce38878ce9088efeb87c7a9f76290961ddf24b43f7f8cebd6a8996b  ./kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video/kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video.part1.rar
-a85841a2c185f520162cc6a92688d53706986779734224dac692d14292e4bcfa  ./kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video/kdeconnect-kde-release_25.12-5778-windows-cl-msvc2022-x86_64.unknown_video.part2.rar
-cf67a0192347d7520400e2474d4b0f9b8ad7433adf027b61df2371769856f971  ./links.txt
-29ceebb7c02e32ddb7cf5ebca7246766724ca3c0fef932ee0802d0a5cbdeccac  ./index-v1-a1.mp4/index-v1-a1.mp4.part2.rar
-272d68bc76b4408a2e961698ce8f00312c15d4aea4899f6c0a9e382e33677b21  ./index-v1-a1.mp4/index-v1-a1.mp4.part6.rar
-9fa3a0bee549538d158792cdad4face7cf148641eb46c9a36b0d23e66c6cb7c9  ./index-v1-a1.mp4/index-v1-a1.mp4.part7.rar
-e819580ce1021f030942c8191ad9b692cf98fc3f4f9cad66e461555c25ff994d  ./index-v1-a1.mp4/index-v1-a1.mp4.part4.rar
-4025ed77e24827848ed0d25b69eae5bc8ffe4cbfe020d05930e0ea8d87f8d415  ./index-v1-a1.mp4/index-v1-a1.mp4.part5.rar
-80b7654c1542a93774ff6f78b694333870bc714e067eca6911f4df26de5c497e  ./index-v1-a1.mp4/index-v1-a1.mp4.part1.rar
-ba61402040bfc2a64c05b679acc11c68d15db9e3f3f446592856e07f03580d12  ./index-v1-a1.mp4/index-v1-a1.mp4.part3.rar
+b4775e75788c5f7e2953e0ee57ca512559374526c526b4dc79a7e1fb8f36376b  ./index-v1-a1.mp4/index-v1-a1.mp4.part2.rar
+0ff491e00c18f9dacf48fc401f63a11b3ec170405df8ccb65b8e5bf2761f6f84  ./index-v1-a1.mp4/index-v1-a1.mp4.part1.rar
+5cf741bcf7d0e684fc29a98b7b75f11b3e22f90cdec5711a19a1701e134cc4d9  ./index-v1-a1.mp4/index-v1-a1.mp4.part3.rar
