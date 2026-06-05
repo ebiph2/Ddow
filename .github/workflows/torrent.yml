@@ -1,0 +1,78 @@
+name: Torrent To Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      magnet:
+        description: "Magnet Link (optional)"
+        required: false
+      torrent_url:
+        description: "Torrent File URL (optional)"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install aria2
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y aria2 zip
+
+      - name: Download from Magnet
+        if: ${{ github.event.inputs.magnet != '' }}
+        run: |
+          mkdir downloads
+          cd downloads
+
+          aria2c \
+            --seed-time=0 \
+            --bt-stop-timeout=1800 \
+            --dir=. \
+            "${{ github.event.inputs.magnet }}"
+
+      - name: Download Torrent File
+        if: ${{ github.event.inputs.torrent_url != '' }}
+        run: |
+          mkdir -p torrent
+          cd torrent
+
+          curl -L "${{ github.event.inputs.torrent_url }}" -o file.torrent
+
+          mkdir -p ../downloads
+
+          aria2c \
+            --seed-time=0 \
+            --bt-stop-timeout=1800 \
+            --dir=../downloads \
+            file.torrent
+
+      - name: Generate File List
+        run: |
+          find downloads -type f > filelist.txt
+
+      - name: Create ZIP
+        run: |
+          zip -r release-package.zip downloads filelist.txt
+
+      - name: Create Release Tag
+        id: tag
+        run: |
+          TAG="torrent-$(date +%Y%m%d-%H%M%S)"
+          echo "tag=$TAG" >> $GITHUB_OUTPUT
+
+      - name: Upload Asset
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.tag.outputs.tag }}
+          name: ${{ steps.tag.outputs.tag }}
+          files: |
+            release-package.zip
