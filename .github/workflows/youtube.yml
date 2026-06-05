@@ -1,0 +1,59 @@
+name: YouTube Downloader
+
+on:
+  workflow_dispatch:
+    inputs:
+      youtube_url:
+        description: "YouTube URL"
+        required: true
+
+      format:
+        description: "mp3 or mp4"
+        required: true
+        default: "mp3"
+        type: choice
+        options:
+          - mp3
+          - mp4
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install yt-dlp
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
+          sudo chmod +x /usr/local/bin/yt-dlp
+
+      - name: Download MP3
+        if: ${{ github.event.inputs.format == 'mp3' }}
+        run: |
+          mkdir output
+          yt-dlp \
+            --extract-audio \
+            --audio-format mp3 \
+            --audio-quality 0 \
+            -o "output/%(title)s.%(ext)s" \
+            "${{ github.event.inputs.youtube_url }}"
+
+      - name: Download MP4 720p
+        if: ${{ github.event.inputs.format == 'mp4' }}
+        run: |
+          mkdir output
+          yt-dlp \
+            -f "bestvideo[height<=720]+bestaudio/best[height<=720]" \
+            --merge-output-format mp4 \
+            -o "output/%(title)s.%(ext)s" \
+            "${{ github.event.inputs.youtube_url }}"
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: downloaded-file
+          path: output/*
