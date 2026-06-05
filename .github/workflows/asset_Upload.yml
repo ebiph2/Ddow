@@ -4,15 +4,11 @@ on:
   workflow_dispatch:
     inputs:
       file_url:
-        description: Direct file URL
+        description: "Direct file URL"
         required: true
 
 permissions:
   contents: write
-
-concurrency:
-  group: asset-upload
-  cancel-in-progress: false
 
 jobs:
   upload:
@@ -22,55 +18,29 @@ jobs:
       - name: Download file
         run: |
           URL="${{ github.event.inputs.file_url }}"
+          FILE=$(basename "$URL")
 
-          FILE=$(basename "${URL%%\?*}")
-
-          curl -L --fail "$URL" -o "$FILE"
+          curl -L "$URL" -o "$FILE"
 
           echo "FILE_NAME=$FILE" >> $GITHUB_ENV
 
-      - name: Ensure release exists
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release view assets-storage >/dev/null 2>&1 || \
-          gh release create assets-storage \
-            --title "Assets Storage"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: auto-${{ github.run_number }}
+          release_name: Auto Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
 
-      - name: Generate unique asset name
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
         env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          ORIGINAL="${{ env.FILE_NAME }}"
-
-          BASENAME="${ORIGINAL%.*}"
-          EXTENSION="${ORIGINAL##*.}"
-
-          if [ "$BASENAME" = "$EXTENSION" ]; then
-            EXTENSION=""
-          else
-            EXTENSION=".$EXTENSION"
-          fi
-
-          NEWNAME="$ORIGINAL"
-          COUNT=1
-
-          while gh release view assets-storage --json assets \
-            --jq '.assets[].name' | grep -Fxq "$NEWNAME"; do
-
-            NEWNAME="${BASENAME}-${COUNT}${EXTENSION}"
-            COUNT=$((COUNT+1))
-          done
-
-          echo "UPLOAD_NAME=$NEWNAME" >> $GITHUB_ENV
-
-      - name: Upload asset
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release upload assets-storage \
-            "${{ env.FILE_NAME }}#${{ env.UPLOAD_NAME }}"
-
-      - name: Show result
-        run: |
-          echo "Uploaded as: ${{ env.UPLOAD_NAME }}"
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./${{ env.FILE_NAME }}
+          asset_name: ${{ env.FILE_NAME }}
+          asset_content_type: application/octet-stream
