@@ -1,0 +1,46 @@
+name: Download And Upload Asset
+
+on:
+  workflow_dispatch:
+    inputs:
+      file_url:
+        description: "Direct file URL"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download file
+        run: |
+          URL="${{ github.event.inputs.file_url }}"
+          FILE=$(basename "$URL")
+
+          curl -L "$URL" -o "$FILE"
+
+          echo "FILE_NAME=$FILE" >> $GITHUB_ENV
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: auto-${{ github.run_number }}
+          release_name: Auto Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./${{ env.FILE_NAME }}
+          asset_name: ${{ env.FILE_NAME }}
+          asset_content_type: application/octet-stream
